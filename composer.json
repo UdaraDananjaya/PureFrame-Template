@@ -1,0 +1,14 @@
+{
+    "name": "pureframe/pureframe",
+    "description": "Clean code, fast results: that's PureFrame",
+    "authors": [
+        {
+            "name": "Udara Dananjaya",
+            "email": "B.u.dananjaya@gmail.com"
+        }
+    ],
+    "license": "MIT",
+    "require": {
+        "php": ">=8.0"
+    }
+}
