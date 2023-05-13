@@ -5,7 +5,7 @@ $config['variable_dump'] =false;
 // debug configuration
 $config['debug'] =true;// enable debug mode (true/false)
 
-define('BASE', 'http://localhost/SimpleX-PHP-Framework/'); // base url for the site
+define('BASE', 'http://localhost/PureFrame-PHP-Framework/'); // base url for the site
 // define('BASE', 'http://localhost:5000/'); // base url for the site
 
 // site configuration
