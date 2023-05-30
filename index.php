@@ -18,10 +18,10 @@ session_start();
 require "Core/init.php";
 
 //Error Reporting
-CONFIG['debug'] ? ini_set('display_errors', 1) : ini_set('display_errors', 0);
+ini_set('display_errors', CONFIG['debug'] ? '1' : '0');
 
 //Create App Object And Load loadController()
-$app = new App;
+$app = new App();
 $app->loadController();
 
 //System And Variable Dumps

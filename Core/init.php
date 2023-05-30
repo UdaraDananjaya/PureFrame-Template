@@ -13,13 +13,13 @@
  */
 
 spl_autoload_register(function ($classname) {
-	require $filename = "App/models/" . ucfirst($classname) . ".php";
+	require_once "App/models/" . ucfirst($classname) . ".php";
 });
 
-require 'config.php';
-require 'autoload.php';
-require 'functions.php';
-require 'Database.php';
-require 'Model.php';
-require 'Controller.php';
-require 'App.php';
+require_once 'config.php';
+require_once 'autoload.php';
+require_once 'functions.php';
+require_once 'Database.php';
+require_once 'Model.php';
+require_once 'Controller.php';
+require_once 'App.php';

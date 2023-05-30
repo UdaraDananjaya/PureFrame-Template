@@ -8,12 +8,13 @@ function system_dump($s, $e)
 {
 	echo "<hr>";
 	$sys_usage = getrusage();
-	printf("Page Rendering : <strong> %.2f s</strong>. ", $e - $s);
-	printf("Memory Useage  : <strong> %.2u KB</strong>. ", round(memory_get_usage() / 1024));
-	printf("System Time Useage  : <strong> %.2f s</strong>. ", $sys_usage["ru_stime.tv_sec"] / 1000000);
-	printf("User Time Useage  : <strong> %.2f s</strong>. ", $sys_usage["ru_utime.tv_sec"] / 1000000);
+	printf("Page Rendering: <strong>%.2f s</strong>. ", $e - $s);
+	printf("Memory Usage: <strong>%.2u KB</strong>. ", round(memory_get_usage() / 1024));
+	printf("System Time Usage: <strong>%.2f s</strong>. ", $sys_usage["ru_stime.tv_sec"] / 1000000);
+	printf("User Time Usage: <strong>%.2f s</strong>. ", $sys_usage["ru_utime.tv_sec"] / 1000000);
 	echo "<hr>";
 }
+
 function variable_dump($variable)
 {
 	echo "<hr>";
@@ -21,50 +22,57 @@ function variable_dump($variable)
 		$type = gettype($arg);
 		$value = var_export($arg, true);
 		$name = $argname;
-		if ($name == "_SERVER") {
+		if ($name === "_SERVER") {
 			continue;
 		}
-		echo "($type) <strong> $name </strong> => $value <br>";
+		echo "($type) <strong>$name</strong> => $value <br>";
 	}
 	echo "<hr>";
 }
+
 function show($stuff)
 {
 	echo "<pre>";
 	print_r($stuff);
 	echo "</pre>";
 }
+
 function print_var($variable)
 {
 	echo "<pre>";
 	var_dump($variable);
 	echo "</pre>";
 }
+
 function esc($str)
 {
-	return htmlspecialchars($str);
+	return htmlspecialchars($str, ENT_QUOTES, 'UTF-8');
 }
+
 function redirect($path)
 {
 	header("Location: " . BASE . $path);
-	die();
+	exit();
 }
+
 function route_url($path)
 {
-	echo "<script>window.location.href=' " . BASE . $path . "';</script>";
-	die();
+	echo "<script>window.location.href='" . BASE . $path . "';</script>";
+	exit();
 }
+
 function cust_log($log_data = "")
 {
 	$logFile = "logs/system.log";
 	$dateTime = date("Y-m-d H:i:s");
 	$ip = $_SERVER["REMOTE_ADDR"];
 	$message = "[$dateTime] [$ip] {{$log_data}}\n";
-	file_put_contents($logFile, $message, FILE_APPEND);
+	file_put_contents($logFile, $message, FILE_APPEND | LOCK_EX);
 	$logArray = file($logFile);
 	$logArray = array_slice($logArray, -5);
-	file_put_contents($logFile, implode("", $logArray));
+	file_put_contents($logFile, implode("", $logArray), LOCK_EX);
 }
+
 function sanitize_input($input)
 {
 	$input = strip_tags($input);
@@ -72,10 +80,12 @@ function sanitize_input($input)
 	$input = trim($input);
 	return $input;
 }
+
 function rand_int($min, $max)
 {
 	return rand($min, $max);
 }
+
 function rand_str($length)
 {
 	$characters = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
@@ -85,6 +95,7 @@ function rand_str($length)
 	}
 	return $random_string;
 }
+
 function encrypt_password($password, $salt)
 {
 	$encrypted_password = "";
@@ -96,6 +107,7 @@ function encrypt_password($password, $salt)
 	}
 	return base64_encode($encrypted_password);
 }
+
 function decrypt_password($encrypted_password, $salt)
 {
 	$password = "";
