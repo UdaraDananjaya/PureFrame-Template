@@ -1,8 +1,8 @@
 <?php
 $config['db'] = array(
-	'hostname' => 'localhost',
-	'username' => 'root',
-	'password' => '',
-	'database' => 'sampledb',
-	'dbdriver' => 'mysql'
+	'hostname' => 'localhost', // Database hostname
+	'username' => 'root', // Database username
+	'password' => '', // Database password
+	'database' => 'sampledb', // Database name
+	'dbdriver' => 'mysql' // Database driver
 );

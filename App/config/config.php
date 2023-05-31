@@ -1,28 +1,28 @@
 <?php
-$config['system_dump'] =false;
-$config['variable_dump'] =false;
+$config['system_dump'] = false; // Enable/disable system dump
+$config['variable_dump'] = false; // Enable/disable variable dump
 
-// debug configuration
-$config['debug'] =true;// enable debug mode (true/false)
+// Debug configuration
+$config['debug'] = true; // Enable debug mode (true/false)
 
-define('BASE', 'http://localhost/PureFrame-Template/'); // base url for the site
-// define('BASE', 'http://localhost:5000/'); // base url for the site
+define('BASE', 'http://localhost/PureFrame-Template/'); // Base URL for the site
+// define('BASE', 'http://localhost:5000/'); // Base URL for the site
 
-// site configuration
-$config['app_name'] ="PureFrame" ;// site name
-$config['app_desc'] ="PureFrame-Template" ;// site name
+// Site configuration
+$config['app_name'] = "PureFrame"; // Site name
+$config['app_desc'] = "PureFrame-Template"; // Site description
 
-// email configuration
-$config['smtp_host'] ="sandbox.smtp.mailtrap.io" ; // smtp server hostname
-$config['smtp_port'] =2525 ; // smtp server port
-$config['smtp_username'] ="32e75b4161d1c5" ; // smtp username
-$config['smtp_password'] ="291b6dbca28002" ; // smtp password
-$config['smtp_email'] ="admin@example.com" ; // administrator email address
-$config['smtp_name'] ="Sender" ; // administrator email address
+// Email configuration
+$config['smtp_host'] = "sandbox.smtp.mailtrap.io"; // SMTP server hostname
+$config['smtp_port'] = 2525; // SMTP server port
+$config['smtp_username'] = "32e75b4161d1c5"; // SMTP username
+$config['smtp_password'] = "291b6dbca28002"; // SMTP password
+$config['smtp_email'] = "admin@example.com"; // Administrator email address
+$config['smtp_name'] = "Sender"; // Administrator name
 
-// routes configuration
-$config['defcon']='Auth'; // default controller
-$config['defmet']= 'index'; // default controller
+// Routes configuration
+$config['defcon'] = 'Auth'; // Default controller
+$config['defmet'] = 'index'; // Default method
 
-$config['temp_eng']= true; // template engine
-$config['mail_lib']= true; // template engine
+$config['temp_eng'] = true; // Enable/disable template engine
+$config['mail_lib'] = true; // Enable/disable mail library

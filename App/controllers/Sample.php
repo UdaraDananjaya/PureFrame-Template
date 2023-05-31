@@ -5,7 +5,7 @@ class Sample
 
     public function __construct()
     {
-    // Check Is the user Login
+        // Check if the user is logged in
         if (empty($_SESSION['USER'])) {
             redirect('Auth/login');
         } 
@@ -35,7 +35,6 @@ class Sample
         $data['Dashboard_table'] = $row;
 
         $this->view('Sample/index', $data);
-
     }
 
     public function List_User()
@@ -49,16 +48,18 @@ class Sample
 
         $row = $user->selectAll();
 
-        $data['Usres_table'] = $row;
+        $data['Users_table'] = $row;
         
         $this->view('Sample/list_user', $data);
     }
+
     public function Manage_User()
     {
         $data = [];
         $data['page'] = "Manage User"; // Page URL
         $data['pagegroup'] = "UserManagement"; // Page Sub Group Customer -> Manage Customer
         $data['User'] = $_SESSION['USER']->email; // Login User Name
+        
         if ($_SERVER['REQUEST_METHOD'] == "POST") {
             $user = new Demo_model;
             $user->set_table('users');
@@ -66,6 +67,7 @@ class Sample
             $user->update($_POST['inputId'], $update_data, "id");
             redirect('Sample/List_User');
         }
+
         if (!empty($_GET['id'])) {
             $user = new Demo_model;
             $user->set_table('users');
@@ -76,12 +78,14 @@ class Sample
             redirect('Sample/List_User');
         }
     }
+
     public function Add_User()
     {
         $data = [];
         $data['page'] = "Add User"; // Page URL
         $data['pagegroup'] = "UserManagement"; // Page Sub Group Customer -> Manage Customer
         $data['User'] = $_SESSION['USER']->email; // Login User Name
+
         if ($_SERVER['REQUEST_METHOD'] == "POST") {
             $user = new Demo_model;
             $user->set_table('users');
@@ -89,27 +93,34 @@ class Sample
             $user->insert($insert_data);
             redirect('Sample/List_User');
         }
+
         $this->view('Sample/add_user', $data);
     }
+
     public function Delete_User()
     {
         $data = [];
         $data['page'] = "Add User"; // Page URL
         $data['pagegroup'] = "UserManagement"; // Page Sub Group Customer -> Manage Customer
         $data['User'] = $_SESSION['USER']->email; // Login User Name
+
         $user = new Demo_model;
         $user->set_table('users');
+
         $row = $user->custom_query("SELECT id,email FROM `users`;");
         $data['User_table'] = $row;
+
         if (!empty($_GET['delete'])) {
             $user->delete($_GET['delete']);
             redirect('Sample/List_User');
         }
+
         if ($_SERVER['REQUEST_METHOD'] == "POST") {
             $insert_data = array("email" => $_POST['inputEmail'], "password" => $_POST['inputPassword']);
             $user->insert($insert_data);
             redirect('Sample/List_User');
         }
+
         $this->view('Sample/delete_user', $data);
     }
 }

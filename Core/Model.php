@@ -19,7 +19,7 @@ trait Model
 		return $this->query($query);
 	}
 
-	public function selectFirst($data, $data_not)
+	public function selectFirst($data, $data_not = [])
 	{
 		$keys = array_keys($data);
 		$keys_not = array_keys($data_not);
