@@ -5,75 +5,66 @@ class Sample
 
     public function __construct()
     {
-        // Check if the user is logged in
         if (empty($_SESSION['USER'])) {
             redirect('Auth/login');
-        } 
+        }
     }
 
     public function index()
     {
-        $data['page'] = "Dashboard"; // Page URL
-        $data['pagegroup'] = ""; // Page Sub Group Customer -> Manage Customer
-        $data['User'] = $_SESSION['USER']->email; // Login User Name
-
-        $user = new Demo_model; // Load Model
-        $user->set_table('users'); // Set Model Table
-
-        $row = $user->single_query("SELECT COUNT('id') as COUNT FROM `users`");
-        $row2 = $user->single_query("SELECT COUNT('id') as COUNT FROM `users`");
-        $row3 = $user->single_query("SELECT COUNT('id') as COUNT FROM `users`");
-
+        $data['page'] = "Dashboard";
+        $data['pagegroup'] = "";
+        $data['User'] = $_SESSION['USER']->email;
+        $user = new Demo_model;
+        $user->set_table('users');
+        $row = $user->singleQuery("SELECT MAX(`id`) as MAX FROM `users`;");
+        $row2 = $user->singleQuery("SELECT SUM(`id`) as SUM FROM `users`;");
+        $row3 = $user->singleQuery("SELECT COUNT(`id`) as COUNT FROM `users`;");
         $data['Dashboard'] = array(
-            "Customers" => "{$row->COUNT}",
-            "Products" => "{$row2->COUNT}",
+            "Customers" => "{$row->MAX}",
+            "Products" => "{$row2->SUM}",
             "Orders" => "{$row3->COUNT}"
         );
-
         $row = $user->selectAll();
-
         $data['Dashboard_table'] = $row;
-
         $this->view('Sample/index', $data);
     }
 
     public function List_User()
     {
-        $data['page'] = "User List"; // Page URL
-        $data['pagegroup'] = "UserManagement"; // Page Sub Group Customer -> Manage Customer
-        $data['User'] = $_SESSION['USER']->email; // Login User Name
-
-        $user = new Demo_model; // Load Model
-        $user->set_table('users'); // Set Model Table
-
+        $data['page'] = "User List";
+        $data['pagegroup'] = "UserManagement";
+        $data['User'] = $_SESSION['USER']->email;
+        $user = new Demo_model;
+        $user->set_table('users');
         $row = $user->selectAll();
-
         $data['Users_table'] = $row;
-        
-        $this->view('Sample/list_user', $data);
+        $this->view('Sample/List_User', $data);
     }
 
-    public function Manage_User()
+    public function Update_User()
     {
         $data = [];
-        $data['page'] = "Manage User"; // Page URL
-        $data['pagegroup'] = "UserManagement"; // Page Sub Group Customer -> Manage Customer
-        $data['User'] = $_SESSION['USER']->email; // Login User Name
-        
+        $data['page'] = "Update User";
+        $data['pagegroup'] = "UserManagement";
+        $data['User'] = $_SESSION['USER']->email;
         if ($_SERVER['REQUEST_METHOD'] == "POST") {
             $user = new Demo_model;
             $user->set_table('users');
-            $update_data = array("email" => $_POST['inputEmail'], "password" => $_POST['inputPassword'], "date" => $_POST['inputDate']);
+            $update_data = array(
+                "email" => $_POST['inputEmail'], 
+                "password" => $_POST['inputPassword'], 
+                "date" => $_POST['inputDate']
+            );
             $user->update($_POST['inputId'], $update_data, "id");
             redirect('Sample/List_User');
         }
-
         if (!empty($_GET['id'])) {
             $user = new Demo_model;
             $user->set_table('users');
             $arr['id'] = $_GET['id'];
             $data['Manage_User'] = $user->selectFirst($arr);
-            $this->view('Sample/manage_user', $data);
+            $this->view('Sample/Update_User', $data);
         } else {
             redirect('Sample/List_User');
         }
@@ -82,45 +73,67 @@ class Sample
     public function Add_User()
     {
         $data = [];
-        $data['page'] = "Add User"; // Page URL
-        $data['pagegroup'] = "UserManagement"; // Page Sub Group Customer -> Manage Customer
-        $data['User'] = $_SESSION['USER']->email; // Login User Name
-
+        $data['page'] = "Add User";
+        $data['pagegroup'] = "UserManagement";
+        $data['User'] = $_SESSION['USER']->email;
         if ($_SERVER['REQUEST_METHOD'] == "POST") {
             $user = new Demo_model;
             $user->set_table('users');
-            $insert_data = array("email" => $_POST['inputEmail'], "password" => $_POST['inputPassword']);
+            $insert_data = array(
+                "email" => $_POST['inputEmail'], 
+                "password" => $_POST['inputPassword']
+            );
             $user->insert($insert_data);
             redirect('Sample/List_User');
         }
-
-        $this->view('Sample/add_user', $data);
+        $this->view('Sample/Add_User', $data);
     }
 
     public function Delete_User()
     {
         $data = [];
-        $data['page'] = "Add User"; // Page URL
-        $data['pagegroup'] = "UserManagement"; // Page Sub Group Customer -> Manage Customer
-        $data['User'] = $_SESSION['USER']->email; // Login User Name
-
+        $data['page'] = "Delete User";
+        $data['pagegroup'] = "UserManagement";
+        $data['User'] = $_SESSION['USER']->email;
         $user = new Demo_model;
         $user->set_table('users');
-
-        $row = $user->custom_query("SELECT id,email FROM `users`;");
+        $row = $user->customQuery("SELECT `id`, `email` FROM `users`;");
         $data['User_table'] = $row;
-
-        if (!empty($_GET['delete'])) {
-            $user->delete($_GET['delete']);
+        if (!empty($_GET['Delete'])) {
+            $user->delete($_GET['Delete']);
             redirect('Sample/List_User');
         }
+        $this->view('Sample/Delete_User', $data);
+    }
+
+    public function Manage_User()
+    {
+        $data = [];
+        $data['page'] = "Manage User";
+        $data['pagegroup'] = "";
+        $data['User'] = $_SESSION['USER']->email;
+        $user = new Demo_model;
+        $user->set_table('users');
+        $user->set_limit('100');
+        $row = $user->selectAll();
+        $data['Users_table'] = $row;
 
         if ($_SERVER['REQUEST_METHOD'] == "POST") {
-            $insert_data = array("email" => $_POST['inputEmail'], "password" => $_POST['inputPassword']);
-            $user->insert($insert_data);
-            redirect('Sample/List_User');
+            $input = filter_input_array(INPUT_POST);
+            if ($input['action'] == 'edit') {
+                $update_field = '';
+                if (isset($input['email'])) {
+                    $update_field .= "email='" . $input['email'] . "'";
+                } else if (isset($input['password'])) {
+                    $update_field .= "password='" . $input['password'] . "'";
+                }
+                if ($update_field && $input['id']) {
+                    $sql = "UPDATE `users` SET $update_field WHERE `id`='" . $input['id'] . "';";
+                    $user->customQuery($sql);
+                    var_dump($sql);
+                }
+            }
         }
-
-        $this->view('Sample/delete_user', $data);
+        $this->view('Sample/Manage_User', $data);
     }
 }

@@ -1,0 +1,32 @@
+{
+    "name": "pureframe/pureframe",
+    "description": "Clean code, fast results: that's PureFrame",
+    "keywords": [
+        "php",
+        "pureframe",
+        "framework"
+    ],
+    "homepage": "https://pureframe.github.io/",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Udara Dananjaya",
+            "email": "B.u.dananjaya@gmail.com"
+        }
+    ],
+    "support": {
+        "issues": "https://github.com/PureFrame/PureFrame/issues",
+        "wiki": "https://github.com/PureFrame/PureFrame/wiki",
+        "source": "https://github.com/PureFrame/PureFrame"
+    },
+    "require": {
+        "php": ">=8.0.2"
+    },
+    "repositories": [
+        {
+            "type": "composer",
+            "url": "https://asset-packagist.org"
+        }
+    ]
+}

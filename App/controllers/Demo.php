@@ -3,61 +3,69 @@ class Demo
 {
     use Controller;
 
-    /**
-     * Index method
-     * This method displays a table view of user data.
-     */
+    public function __construct()
+    {
+        if (empty($_SESSION['USER'])) {
+            redirect('Auth/login');
+        }
+    }
+
     public function index()
     {
         $temp = new Template();
         $temp->header = "Template/layout/header";
         $temp->footer = "Template/layout/footer";
-        $data['page'] = "User List"; // Page URL
-        $data['pagegroup'] = "UserManagement";
-        $data['User'] = "dd";
-        $user = new Demo_model; // Load Model
-        $user->set_table('users'); // Set Model Table
+
+        $data['page'] = "Users Table";
+        $data['pagegroup'] = "";
+
+        $data['User'] = $_SESSION['USER']->email;
+        $user = new Demo_model;
+        $user->set_table('users');
+        $user->set_limit('100');
         $row = $user->selectAll();
 
         $data['Table_Title'] = "View Product Details";
         $data['Table_Data'] = array();
-        $data['Table_Header'] = array('id', 'E-mail', 'Password', 'Date');
+        $data['Table_Header'] = array('E-mail', 'Password', 'Date', 'Action');
 
-        foreach ($row as  $row_dump) {
+        foreach ($row as $row_dump) {
             $test = array(
-                $row_dump->id,
                 $row_dump->email,
                 $row_dump->password,
-                "<a> a </a>"
+                $row_dump->date,
+                '<a onclick="return confirm(\'Are you sure you want to delete?\')" href="' . BASE . 'Demo/index?Delete=' . $row_dump->id . '"><i class="bi bi-trash3-fill"></i></a>'
             );
             array_push($data['Table_Data'], $test);
         }
 
-        $temp->engine_view('table', $data);
-    }
-
-    /**
-     * Form method
-     * This method displays a form view for creating/editing user data.
-     */
-    public function form()
-    {
-        $user = new Demo_model;
-        $user->set_table('users');
-        $row = $user->custom_query("SELECT id,email FROM `users`;");
-
-        $select_data = [];
-        foreach ($row as  $row_dump) {
-            $test = array($row_dump->id =>  $row_dump->email);
-            array_push($select_data, $test);
+        if (!empty($_GET['Delete'])) {
+            $user->delete($_GET['Delete']);
+            redirect('Demo/index');
         }
 
+        $temp->renderTemplate('table', $data);
+    }
+
+    public function form()
+    {
         $temp = new Template();
         $temp->header = "Template/layout/header";
         $temp->footer = "Template/layout/footer";
-        $data['page'] = "User List"; // Page URL
-        $data['pagegroup'] = "UserManagement";
-        $data['User'] = "dd";
+
+        $data['page'] = "Users Form";
+        $data['pagegroup'] = "";
+
+        $data['User'] = $_SESSION['USER']->email;
+        $user = new Demo_model;
+        $user->set_table('users');
+        $row = $user->customQuery("SELECT id,email FROM `users`;");
+        $select_data = [];
+        foreach ($row as $row_dump) {
+            $test = array($row_dump->id => $row_dump->email);
+            array_push($select_data, $test);
+        }
+
         $data['Form_Title'] = "View Product Details";
 
         $data['Form_Data'] = array(
@@ -70,27 +78,23 @@ class Demo
             ),
             array(
                 'type' => 'text',
-                'label' => 'Name',
-                'name' => 'name',
-                'value' => '',
-                'attribute' => ''
-            ),
-            array(
-                'type' => 'text',
-                'label' => 'Name',
-                'name' => 'name',
-                'value' => '',
-                'attribute' => ''
-            ),
-            array(
-                'type' => 'text',
-                'label' => 'Name',
-                'name' => 'name',
+                'label' => 'Password',
+                'name' => 'password',
                 'value' => '',
                 'attribute' => ''
             )
         );
 
-        $temp->engine_view('form', $data);
+        if ($_SERVER['REQUEST_METHOD'] == "POST") {
+            $user = new Demo_model;
+            $user->set_table('users');
+            $update_data = array(
+                "password" => $_POST['password']
+            );
+            $user->update($_POST['name'], $update_data, "id");
+            redirect('Demo/index');
+        }
+
+        $temp->renderTemplate('form', $data);
     }
 }

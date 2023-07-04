@@ -4,11 +4,12 @@
  * Framework Configuration
  */
 
-// require "App/config/config.php";
-// require "App/config/database.php";
-
+// Require all PHP files in the "App/config" directory
 foreach (glob("App/config/*.php") as $filename) {
-    require "$filename";
+    if (is_file($filename)) {
+        require_once $filename;
+    }
 }
 
+// Define the CONFIG constant using the $config array from the included files
 define('CONFIG', $config);
