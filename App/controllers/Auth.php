@@ -5,9 +5,7 @@ class Auth
 
 	public function index()
 	{
-		if (empty($_SESSION['USER'])) {
-			redirect('Auth/login');
-		}
+		redirect('Auth/login');
 	}
 
 	public function login()
